@@ -1,90 +1,62 @@
+from  tkinter import * 
+import tkinter.messagebox
+def entertask():
+    input_text=""
+    def add():
+        input_text=entry_task.get(1.0, "end-1c")
+        if input_text=="":
+            tkinter.messagebox.showwarning(title="Warning!",message="Please Enter some Text")
+        else:
+            listbox_task.insert(END,input_text)
+            root1.destroy()
+    root1=Tk()
+    root1.title("Add task")
+    entry_task=Text(root1,width=40,height=4)
+    entry_task.pack()
+    button_temp=Button(root1,text="Add task",command=add)
+    button_temp.pack()
+    root1.mainloop()
+    
+def deletetask(): 
+    selected=listbox_task.curselection()
+    listbox_task.delete(selected[0]) 
 
-from telegram.ext.updater import Updater
-from telegram.update import Update
-from telegram.ext.callbackcontext import CallbackContext
-from telegram.ext.commandhandler import CommandHandler
-from telegram.ext.messagehandler import MessageHandler
-from telegram.ext.filters import Filters
-updater = Updater("6181727089:AAHXx52Lwl_wtZQvLT2-ZLsxOO27aF81KXg",use_context=True)
-
-
-def start(update: Update, context: CallbackContext):
-	update.message.reply_text(
-		"Hi..Let me help you with the tutorials..Please write /help to see the commands available.")
-def help(update: Update, context: CallbackContext):
-	update.message.reply_text("""Available Commands :-
-	/html - To get html tutorial
-    /css - To get the css tutorial
-	/javascript- To get javascript tutorial
-    /mongodb - To get the mongo db tutorial
-	/mysql- To get the mysql tutorial
-    /php - To get the php tutorial
-    /pyhton - To get python tutorial
-    /cpp - To get cpp tutorial
-    /c - To get the c tutorial
-    /java - To get the java tutorial""")
-def html_url(update: Update, context: CallbackContext):
-	update.message.reply_text("https://www.youtube.com/playlist?list=PLZPZq0r_RZOOxqHgOzPyCzIl4AJjXbCYt")
-
-
-def css_url(update: Update, context: CallbackContext):
-	update.message.reply_text("https://www.youtube.com/playlist?list=PLZPZq0r_RZOONc3kkuRmBOlj67YAG6jqo")
-
-
-def javascript_url(update: Update, context: CallbackContext):
-	update.message.reply_text("https://www.youtube.com/playlist?list=PLZPZq0r_RZOMRMjHB_IEBjOW_ufr00yG1")
+def markcompleted():
+    marked=listbox_task.curselection()
+    temp=marked[0]
+    temp_marked=listbox_task.get(marked) 
+    temp_marked=temp_marked+" ✔" 
+    listbox_task.delete(temp)
+    listbox_task.insert(temp,temp_marked)
+window=Tk()
+window.title("DataFlair To_Do_APP")
 
 
-def mongodb_url(update: Update, context: CallbackContext):
-	update.message.reply_text("https://www.youtube.com/playlist?list=PLZPZq0r_RZONbmOn3EsHac5u5_-Rue3ne")
 
-def mysql_url(update: Update, context: CallbackContext):
-	update.message.reply_text("https://www.youtube.com/playlist?list=PLZPZq0r_RZOMskz6MdsMOgxzheIyjo-BZ")
+frame_task=Frame(window)
+frame_task.pack()
 
-
-def php_url(update: Update, context: CallbackContext):
-	update.message.reply_text("https://www.youtube.com/playlist?list=PLZPZq0r_RZOO6bGTY9jbLOyF_x6tgwcuB")
+listbox_task=Listbox(frame_task,bg="black",fg="white",height=15,width=50,font = "Helvetica")  
+listbox_task.pack(side=tkinter.LEFT)
 
 
-def python_url(update: Update, context: CallbackContext):
-	update.message.reply_text("https://www.youtube.com/playlist?list=PLZPZq0r_RZOOkUQbat8LyQii36cJf2SWT")
+scrollbar_task=Scrollbar(frame_task)
+scrollbar_task.pack(side=tkinter.RIGHT,fill=tkinter.Y)
+listbox_task.config(yscrollcommand=scrollbar_task.set)
+scrollbar_task.config(command=listbox_task.yview)
 
 
-def cpp_url(update: Update, context: CallbackContext):
-	update.message.reply_text("https://www.youtube.com/playlist?list=PLZPZq0r_RZOMHoXIcxze_lP97j2Ase2on")
 
-def c_url(update: Update, context: CallbackContext):
-	update.message.reply_text("https://www.youtube.com/playlist?list=PLZPZq0r_RZOOzY_vR4zJM32SqsSInGMwe")
+entry_button=Button(window,text="Add task",width=50,command=entertask)
+entry_button.pack(pady=3)
 
+delete_button=Button(window,text="Delete selected task",width=50,command=deletetask)
+delete_button.pack(pady=3)
 
-def java_url(update: Update, context: CallbackContext):
-	update.message.reply_text("https://www.youtube.com/playlist?list=PLZPZq0r_RZOMhCAyywfnYLlrjiVOkdAI1")
-
-
-def unknown_text(update: Update, context: CallbackContext):
-	update.message.reply_text(
-		"Sorry I can't recognize you , you said '%s'" % update.message.text)
+mark_button=Button(window,text="Mark as completed ",width=50,command=markcompleted)
+mark_button.pack(pady=3)
 
 
-def unknown(update: Update, context: CallbackContext):
-	update.message.reply_text(
-		"Sorry '%s' is not a valid command" % update.message.text)
-updater.dispatcher.add_handler(CommandHandler('start', start))
-updater.dispatcher.add_handler(CommandHandler('html', html_url))
-updater.dispatcher.add_handler(CommandHandler('help', help))
-updater.dispatcher.add_handler(CommandHandler('css', css_url))
-updater.dispatcher.add_handler(CommandHandler('javascript', javascript_url))
-updater.dispatcher.add_handler(CommandHandler('mongodb', mongodb_url))
-updater.dispatcher.add_handler(CommandHandler('mysql', mysql_url))
-updater.dispatcher.add_handler(CommandHandler('php', php_url))
-updater.dispatcher.add_handler(CommandHandler('python', python_url))
-updater.dispatcher.add_handler(CommandHandler('cpp', cpp_url))
-updater.dispatcher.add_handler(CommandHandler('c', c_url))
-updater.dispatcher.add_handler(CommandHandler('java', java_url))
-updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown))
-updater.dispatcher.add_handler(MessageHandler(Filters.command, unknown))  
-  
+window.mainloop()
 
-updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown_text))
-  
-updater.start_polling()
+
